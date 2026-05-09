@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+
+\bibitem{gonzalez_digital_2017}
+R.~Gonzalez and R.~Woods, {\em Digital {Image} {Processing}}.
+\newblock New York: Pearson, 2017.
+
+\bibitem{macchiavello_dominio_nodate}
+B.~Macchiavello, ``Domínio da {Frequência} 1.''
+
+\bibitem{macchiavello_dominio_2026}
+B.~Macchiavello, ``Domínio da {Frequência} 2,'' Apr. 2026.
+
+\bibitem{noauthor_face_nodate}
+``face — {SciPy} v1.17.0 {Manual}.''
+
+\bibitem{noauthor_opencv_nodate-1}
+``{OpenCV}: {Image} {Filtering}.''
+
+\bibitem{noauthor_opencv_nodate}
+``{OpenCV}: {Laplace} {Operator}.''
+
+\end{thebibliography}
