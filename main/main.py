@@ -8,6 +8,22 @@ img_path = start / "images"
 img_output_path = img_path / "output"
 
 """
+Retira pixeis da imagem para manter a mesma com tamanho multiplo de 8
+INPUT:
+    img - imagem a sofrer o corte de tamanho
+OUTPUT:
+    result - imagem apos retirada de pixeis
+"""
+def resize_img(img: np.ndarray) -> np.ndarray:
+    h,w,_ = img.shape
+    h_pad = h%8
+    w_pad = w%8
+    h-=h_pad
+    w-=w_pad
+    result = img[:h, :w]
+    return result
+
+"""
 Aplica um ciclo completo de compressao e descompressao JPEG na imagem de entrada.
 INPUT:
     img - imagem a ser aplicada o ciclo
@@ -108,8 +124,9 @@ def show_diff(img: np.ndarray, mask: np.ndarray) -> None:
         print("Nao foi detectada nenhuma alteracao na imagem")
 
 quality = 90
-img = cv2.imread(img_path/"SIPI"/"4.1.03.BMP")
-te_img = create_tamper_evident(img=img, quality=quality)
+img = cv2.imread(img_path/"original_organic_1.jpg")
+proc_img = resize_img(img=img)
+te_img = create_tamper_evident(img=proc_img, quality=quality)
 cv2.imwrite(img_output_path/"tamper_evident.jpg",te_img, [cv2.IMWRITE_JPEG_QUALITY, quality])
 
 sus_img = cv2.imread(img_output_path/"tamper_evident.jpg")
