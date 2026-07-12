@@ -6,6 +6,7 @@ from pathlib import Path
 start = Path.cwd().parent
 img_path = start / "images"
 img_output_path = img_path / "output"
+convergence_index = []
 """
 subdirs = [x for x in img_path.iterdir() if x.is_dir() and x != img_output_path]
 fileList = [x for x in img_path.iterdir() if x.is_file()]
@@ -67,6 +68,7 @@ def create_tamper_evident(img: np.ndarray, quality: int, max_iters: int = 100, t
         print(f"Iteracao atual: {i}, Pixeis alterados: {num_dif}")
         if(num_dif == 0):
             print(f'Ponto fixo atingido em i={i}.')
+            convergence_index.append(i)
             return current_img
         current_img = next_img
     print("Imagem nao convergiu dentro do numero de iteracoes\n")
@@ -143,7 +145,6 @@ subdirs.append(img_path)
 quality = 90
 fileList = [x for x in img_path.iterdir() if x.is_file()]
 failed = []
-
 for dirs in subdirs:
     fileList = [x for x in dirs.iterdir() if x.is_file]
     for file in fileList:
@@ -165,7 +166,7 @@ for dirs in subdirs:
                 del tamper_img
 
                 test_img = cv2.imread(output_name)
-                change_img = cv2.blur(test_img, (50,50))
+                change_img = cv2.blur(test_img, (500,500))
                 mask, diff = check_tamper(img=change_img, quality=quality)
                 del change_img
                 #mask, diff = check_tamper(img=test_img, quality=quality)
@@ -179,6 +180,9 @@ print("Os seguintes arquivos falharam em convergir:\n")
 for fail in failed:
     print(fail)
 
+print("Criando arquivo de indices de convergencia.\n")
+with open("convergence_index.txt", "w") as f:
+    f.write(",\n".join(map(str,convergence_index)))
 """
 quality = 90
 img = cv2.imread(img_path/"original_organic_1.jpg")
