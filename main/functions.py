@@ -9,13 +9,6 @@ img_output_path = img_path / "output"
 convergence_index = []
 convergence_list = []
 """
-subdirs = [x for x in img_path.iterdir() if x.is_dir() and x != img_output_path]
-fileList = [x for x in img_path.iterdir() if x.is_file()]
-for x in fileList:
-    print(x.name)
-print(subdirs)
-"""
-"""
 Retira pixeis da imagem para manter a mesma com tamanho multiplo de 8
 INPUT:
     img - imagem a sofrer o corte de tamanho
@@ -143,7 +136,7 @@ def show_diff(img: np.ndarray, mask: np.ndarray, outputPath: Path) -> None:
     else:
         print("Nao foi detectada nenhuma alteracao na imagem.\n")
 
-
+"""
 if __name__ == "__main__":
     subdirs = [x for x in img_path.iterdir() if x.is_dir() and x != img_output_path]
     subdirs.append(img_path)
@@ -159,7 +152,7 @@ if __name__ == "__main__":
                 print(f"Diretorio: {dirs}\n")
                 fileOrder.append(str(file.name))
                 cur_img = cv2.imread(file)
-
+                #cur_img = cv2.rotate(cur_img, cv2.ROTATE_90_CLOCKWISE)
                 crop_img = resize_img(img=cur_img)
                 del cur_img
                 tamper_img = create_tamper_evident(img=crop_img, quality=quality)
@@ -198,3 +191,4 @@ if __name__ == "__main__":
         
     for i in range(0,len(fileOrder)):
         print(f"{i}, {fileOrder[i]}")
+"""
