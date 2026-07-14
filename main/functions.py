@@ -7,6 +7,7 @@ start = Path.cwd().parent
 img_path = start / "images"
 img_output_path = img_path / "output"
 convergence_index = []
+convergence_list = []
 """
 subdirs = [x for x in img_path.iterdir() if x.is_dir() and x != img_output_path]
 fileList = [x for x in img_path.iterdir() if x.is_file()]
@@ -60,15 +61,18 @@ OUTPUT:
 """
 def create_tamper_evident(img: np.ndarray, quality: int, max_iters: int = 100, tol: int = 0) -> (np.ndarray | None):
     current_img = img.copy()
+    index_list = []
     for i in range(max_iters):
         next_img = jpeg_cycle(current_img, quality)
         img_dif = np.abs(next_img.astype(np.uint16) - current_img.astype(np.uint16))
         num_dif = np.any(img_dif > tol, axis=-1).sum()
         del img_dif
         print(f"Iteracao atual: {i}, Pixeis alterados: {num_dif}")
+        index_list.append(int(num_dif))
         if(num_dif == 0):
             print(f'Ponto fixo atingido em i={i}.')
             convergence_index.append(i)
+            convergence_list.append(index_list)
             return current_img
         current_img = next_img
     print("Imagem nao convergiu dentro do numero de iteracoes\n")
@@ -140,59 +144,57 @@ def show_diff(img: np.ndarray, mask: np.ndarray, outputPath: Path) -> None:
         print("Nao foi detectada nenhuma alteracao na imagem.\n")
 
 
-subdirs = [x for x in img_path.iterdir() if x.is_dir() and x != img_output_path]
-subdirs.append(img_path)
-quality = 90
-fileList = [x for x in img_path.iterdir() if x.is_file()]
-failed = []
-for dirs in subdirs:
-    fileList = [x for x in dirs.iterdir() if x.is_file]
-    for file in fileList:
-        if file.suffix:
-            print(f"Testando arquivo: {file.name}")
-            print(f"Diretorio: {dirs}\n")
-            cur_img = cv2.imread(file)
+if __name__ == "__main__":
+    subdirs = [x for x in img_path.iterdir() if x.is_dir() and x != img_output_path]
+    subdirs.append(img_path)
+    quality = 90
+    fileList = [x for x in img_path.iterdir() if x.is_file()]
+    failed = []
+    fileOrder = []
+    for dirs in subdirs:
+        fileList = [x for x in dirs.iterdir() if x.is_file]
+        for file in fileList:
+            if file.suffix:
+                print(f"Testando arquivo: {file.name}")
+                print(f"Diretorio: {dirs}\n")
+                fileOrder.append(str(file.name))
+                cur_img = cv2.imread(file)
 
-            crop_img = resize_img(img=cur_img)
-            del cur_img
-            tamper_img = create_tamper_evident(img=crop_img, quality=quality)
-            if tamper_img is not None:
-                del crop_img
-                tamper_img = resize_img(img=tamper_img)
+                crop_img = resize_img(img=cur_img)
+                del cur_img
+                tamper_img = create_tamper_evident(img=crop_img, quality=quality)
+                if tamper_img is not None:
+                    del crop_img
+                    tamper_img = resize_img(img=tamper_img)
 
-                output_name = (img_output_path/file.stem)
-                output_name = output_name.with_name(output_name.stem + "_tamper.jpg")
-                cv2.imwrite(output_name, tamper_img, [cv2.IMWRITE_JPEG_QUALITY, quality])
-                del tamper_img
+                    output_name = (img_output_path/file.stem)
+                    output_name = output_name.with_name(output_name.stem + "_tamper.jpg")
+                    cv2.imwrite(output_name, tamper_img, [cv2.IMWRITE_JPEG_QUALITY, quality])
+                    del tamper_img
 
-                test_img = cv2.imread(output_name)
-                change_img = cv2.blur(test_img, (500,500))
-                mask, diff = check_tamper(img=change_img, quality=quality)
-                del change_img
-                #mask, diff = check_tamper(img=test_img, quality=quality)
-                print(f"Quantidade de blocos alterados: {mask.sum()} de {mask.size}\n")
-                show_diff(img=test_img, mask=mask, outputPath=output_name)
-                del test_img
-            else:
-                failed.append(file.name)
+                    test_img = cv2.imread(output_name)
+                    change_img = cv2.blur(test_img, (500,500))
+                    mask, diff = check_tamper(img=change_img, quality=quality)
+                    del change_img
+                    #mask, diff = check_tamper(img=test_img, quality=quality)
+                    print(f"Quantidade de blocos alterados: {mask.sum()} de {mask.size}\n")
+                    show_diff(img=test_img, mask=mask, outputPath=output_name)
+                    del test_img
+                else:
+                    failed.append(file.name)
 
-print("Os seguintes arquivos falharam em convergir:\n")
-for fail in failed:
-    print(fail)
+    print("Os seguintes arquivos falharam em convergir:\n")
+    for fail in failed:
+        print(fail)
 
-print("Criando arquivo de indices de convergencia.\n")
-with open("convergence_index.txt", "w") as f:
-    f.write(",\n".join(map(str,convergence_index)))
-"""
-quality = 90
-img = cv2.imread(img_path/"original_organic_1.jpg")
-crop_img = resize_img(img=img)
-te_img = create_tamper_evident(img=crop_img, quality=quality)
-te_img = resize_img(te_img)
-cv2.imwrite(img_output_path/"tamper_evident.jpg",te_img, [cv2.IMWRITE_JPEG_QUALITY, quality])
+    print("Criando arquivo de indices de convergencia.\n")
+    with open("convergence_index.txt", "w") as f:
+        f.write(",\n".join(map(str,convergence_index)))
 
-sus_img = cv2.imread(img_output_path/"tamper_evident.jpg")
-mask, diff = check_tamper(img=sus_img, quality=quality)
-print(f"Quantidade de blocos alterados: {mask.sum()} de {mask.size}")
-show_diff(img=sus_img, mask=mask)
-"""
+    print("Criando arquivo de listas de convergencia.\n")
+    #np.savetxt("convergence_list.txt", convergence_list, fmt='%d', delimiter=',')
+    with open("convergence_list.txt", "w") as f:
+        f.write(",\n".join(map(str,convergence_list)))
+        
+    for i in range(0,len(fileOrder)):
+        print(f"{i}, {fileOrder[i]}")

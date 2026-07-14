@@ -1,0 +1,25 @@
+def resize_img(img: np.ndarray) -> np.ndarray:
+    h,w,_ = img.shape
+    h_pad = h%8
+    w_pad = w%8
+    pad_down, pad_right = False, False
+    if(h_pad > 3):
+        pad_down = True
+    if(w_pad > 3):
+        pad_right = True
+    if(pad_down and pad_right):
+        result = cv2.copyMakeBorder(img, 0, h_pad, 0, w_pad, cv2.BORDER_REFLECT)
+    elif(pad_down):
+        w-=w_pad
+        img = img[:h, :w]
+        result = cv2.copyMakeBorder(img, 0, h_pad, 0, 0, cv2.BORDER_REFLECT)
+    elif(pad_right):
+        h-=h_pad
+        img = img[:h, :w]
+        result = cv2.copyMakeBorder(img, 0, 0, 0, w_pad, cv2.BORDER_REFLECT)
+    else:
+        h-=h_pad
+        w-=w_pad
+        result = img[:h, :w]
+    return result
+
