@@ -17,13 +17,9 @@ def rand_incr(img: np.ndarray) -> np.ndarray:
         rcol = random.randint(0,h-1)
         rline = random.randint(0,w-1)
         res[rcol][rline] = 255
-        #rcol = random.randint(0,h-1)
-        #rline = random.randint(0,w-1)
-        #res[rcol][rline] = 0
-    
-    #result = cv2.hconcat([img,res])
-    #cv2.imshow(" ",result)
-    #cv2.waitKey(0)
+        rcol = random.randint(0,h-1)
+        rline = random.randint(0,w-1)
+        res[rcol][rline] = 0
     return res
 
 img = cv2.imread(img_path/"lena_color_512.tif")

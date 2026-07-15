@@ -14,7 +14,7 @@ Um exemplo de uso e teste utilizando a imagem "lena_color_512.tif" pode ser vist
 
 O programa `main.py` executa a segmentação da imagem "onion.jpg" utilizando o algoritmo `k-means` e melhora a visualização do tumor presente na imagem "brain.jpg" utilizando binarização e thresholding global.
 
-Os gráficos e curvas calculadas e apresentadas no relatório estão presentes na pasta "curvas"
+Os gráficos e curvas calculadas e apresentadas no relatório estão presentes na pasta *curvas*
 
 ### Execute o programa utilizando o comando:
 
@@ -50,4 +50,7 @@ python change_images.py
 │   ├── functions.py
 │   ├── readme.md
 │   └── requirements.txt
+├── Relatorio_Trabalho_Final.pdf
+├── Slide_Trabalho_Final.pdf
+└── link_github.txt
 ```
