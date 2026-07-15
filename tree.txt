@@ -1,0 +1,22 @@
+.
+├── curvas
+│   ├── convergencia_qualidades.png
+│   ├── curva_comparativa.png
+│   ├── curvas_convergencia.png
+│   └── histograma_convergencia.png
+├── images
+│   ├── 5.3.01.BMP
+│   ├── I03.BMP
+│   ├── lena_color_512.tif
+│   ├── output
+│   ├── SIPI
+│   └── tid2008
+├── main
+│   ├── change_images.py
+│   ├── convergence_index.txt
+│   ├── convergence_list.txt
+│   ├── functions.py
+│   ├── readme.md
+│   └── requirements.txt
+
+

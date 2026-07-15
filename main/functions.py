@@ -83,7 +83,6 @@ OUTPUT:
 """
 def check_tamper(img: np.ndarray, quality: int):
     h,w,_ = img.shape
-    # reducao da imagem caso nao seja multiplo de 8
     h-=h%8
     w-=w%8
     img_arr = img[:h, :w].astype(np.uint8)
@@ -136,7 +135,7 @@ def show_diff(img: np.ndarray, mask: np.ndarray, outputPath: Path) -> None:
     else:
         print("Nao foi detectada nenhuma alteracao na imagem.\n")
 
-"""
+
 if __name__ == "__main__":
     subdirs = [x for x in img_path.iterdir() if x.is_dir() and x != img_output_path]
     subdirs.append(img_path)
@@ -185,10 +184,8 @@ if __name__ == "__main__":
         f.write(",\n".join(map(str,convergence_index)))
 
     print("Criando arquivo de listas de convergencia.\n")
-    #np.savetxt("convergence_list.txt", convergence_list, fmt='%d', delimiter=',')
     with open("convergence_list.txt", "w") as f:
         f.write(",\n".join(map(str,convergence_list)))
         
     for i in range(0,len(fileOrder)):
         print(f"{i}, {fileOrder[i]}")
-"""
